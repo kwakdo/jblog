@@ -16,7 +16,7 @@
 						style="width: 280px" alt="profile image"><br/>
 		죄송합니다. 요청하신 페이지를 찾을 수 없습니다.<br/>
 		잠시 후, 다시 시도해 주세요.<br>
-		<br> <a href="${pageContext.request.contextPath }/main">메인화면</a>으로 가기<br>
+		<br> <a href="${pageContext.request.contextPath }">메인화면</a>으로 가기<br>
 	</p>
 </body>
 </html>
