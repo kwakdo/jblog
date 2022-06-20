@@ -9,4 +9,21 @@
 		]]>
 	</insert>
 	
+	<select id="findByList" parameterType="map" resultType="categoryvo">
+	<![CDATA[
+		select no , name, blog_id
+		  from category
+		   where blog_id = #{blog_id};
+	]]>
+	</select>
+	
+	<select id="findByNo" parameterType="map" resultType="categoryvo">
+	<![CDATA[
+		select no , name , blog_id
+		  from category
+		   where blog_id = #{blog_id}
+		   and no = #{no}
+	]]>
+	</select>
+	
 </mapper>

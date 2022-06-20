@@ -8,4 +8,19 @@
 		values (#{id }, #{name }"'s BLOG", '/assets/images/spring-logo.jpg')
 		]]>
 	</insert>
+	
+	<select id="find" resultType="blogvo">
+		<![CDATA[
+		  select id, title, logo
+		    from blog;		
+		]]>
+	</select>
+	
+	<select id="findById" parameterType="String" resultType="blogvo">
+		<![CDATA[
+		select id, title, logo
+		  from blog
+		 where id=#{id }
+		]]>
+	</select>
 </mapper>
