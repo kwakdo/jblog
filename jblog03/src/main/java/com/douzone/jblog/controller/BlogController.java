@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -18,6 +19,7 @@ import com.douzone.jblog.service.BlogService;
 import com.douzone.jblog.service.CategoryService;
 import com.douzone.jblog.service.FileUploadService;
 import com.douzone.jblog.service.PostService;
+import com.douzone.jblog.service.UserService;
 import com.douzone.jblog.vo.BlogVo;
 import com.douzone.jblog.vo.CategoryVo;
 import com.douzone.jblog.vo.PostVo;
@@ -71,29 +73,21 @@ public class BlogController {
 	}
 	
 	@Auth
-	@RequestMapping("admin/category")
-	public String adminCategory(
-			@AuthUser UserVo authUser, 
-			Model model) {
-		
-		model.addAttribute("blogVo", blogService.getBlog(authUser.getId()));
-		List<CategoryVo> list = categoryService.getList(authUser.getId());
-
-		model.addAttribute("categoryList", list);
-		return "blog/admin/category";
+	@RequestMapping(value="/admin/write", method=RequestMethod.GET)
+	public String write(@ModelAttribute UserVo userVo) {
+		return "blog/admin/write";
 	}
 	
-	@Auth
-	@RequestMapping(value = "/admin/write", method = RequestMethod.GET)
-	public String adminWrite(@AuthUser UserVo authUser, Model model) {
-		model.addAttribute("list", blogService.findCategoryNoAndName(authUser.getId()));
-		return "/blog/admin/write";
-	}
+//	@Auth
+//	@RequestMapping(value="/admin/write", method=RequestMethod.GET)
+//	public String getCategory() {
+//		return "blog/admin/write";
 	
 	@Auth
 	@RequestMapping(value = "/admin/write", method = RequestMethod.POST)
-	public String adminWrite(@AuthUser UserVo authUser, PostVo postVo) {
-		blogService.write(postVo);
+	public String Write(@AuthUser UserVo authUser, PostVo postVo, CategoryVo categoryVo) {
+		postVo.setCategoryNo(categoryVo.getNo());
+		postService.write(postVo);
 		return "redirect:/" + authUser.getId() + "/admin/write";
 	}
 	
