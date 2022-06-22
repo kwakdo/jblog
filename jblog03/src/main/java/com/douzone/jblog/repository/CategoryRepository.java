@@ -17,23 +17,28 @@ public class CategoryRepository {
 	@Autowired
 	private SqlSession sqlSession;
 
-	public void insert(UserVo vo) {
-		sqlSession.insert("category.insert", vo);
+	// 회원가입 시
+	public void insertJoin(UserVo vo) {
+		sqlSession.insert("category.insertJoin", vo);
 	}
 
-	public List<CategoryVo> findByList(String blogId) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("blogId", blogId);
-		return sqlSession.selectList("category.findByList", map);
-
+	// 카테고리 추가 시
+	public void insert(CategoryVo categoryVo) {
+		sqlSession.insert("category.insert", categoryVo);
+	}
+	
+	public List<CategoryVo> findAll(String id) {
+		return sqlSession.selectList("category.findAll", id);
 	}
 
-	public CategoryVo findByNo(String blogId, Long no) {
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("no", no);
-		map.put("blogId", blogId);
-		return sqlSession.selectOne("category.findByNo", map);
-
+	public void delete(Long no) {
+		sqlSession.delete("category.delete", no);
 	}
+
+	public CategoryVo getCategory(String id) {
+		return sqlSession.selectOne("category.getCategory", id);
+	}
+
+	
 	
 }

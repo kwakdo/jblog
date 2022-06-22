@@ -14,14 +14,24 @@ public class CategoryService {
 	@Autowired
 	private CategoryRepository categoryRepository;
 
-	public List<CategoryVo> getList(String blogId) {
-		return categoryRepository.findByList(blogId);
+	public List<CategoryVo> findAll(String id) {
+		return categoryRepository.findAll(id);
 	}
 
-	public CategoryVo getCategory(String id, Long no) {
-		return categoryRepository.findByNo(id, no);
-	}
-	
-	
 
+	public void insert(CategoryVo categoryvo) {
+		categoryRepository.insert(categoryvo);
+	}
+
+
+	public void delete(Long no) {
+		categoryRepository.delete(no);
+	}
+
+
+	public CategoryVo getCategory(String id) {
+		return categoryRepository.getCategory(id);
+	}
+
+		
 }

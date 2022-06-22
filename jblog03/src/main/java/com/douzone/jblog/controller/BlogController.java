@@ -3,7 +3,7 @@ package com.douzone.jblog.controller;
 import java.util.List;
 import java.util.Optional;
 
-import javax.validation.Valid;
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.douzone.jblog.security.Auth;
 import com.douzone.jblog.security.AuthUser;
@@ -19,12 +21,11 @@ import com.douzone.jblog.service.BlogService;
 import com.douzone.jblog.service.CategoryService;
 import com.douzone.jblog.service.FileUploadService;
 import com.douzone.jblog.service.PostService;
-import com.douzone.jblog.service.UserService;
 import com.douzone.jblog.vo.BlogVo;
 import com.douzone.jblog.vo.CategoryVo;
 import com.douzone.jblog.vo.PostVo;
 import com.douzone.jblog.vo.UserVo;
-
+ 
 @Controller
 @RequestMapping("/{id:(?!assets).*}")
 public class BlogController {
@@ -40,6 +41,9 @@ public class BlogController {
 
 	@Autowired
 	FileUploadService fileUploadService;
+	
+	@Autowired
+	private ServletContext servletContext;
 
 
 	@RequestMapping({"", "/{pathNo1}", "/{pathNo1}/{pathNo2}"})
@@ -58,37 +62,104 @@ public class BlogController {
 		} else if(pathNo1.isPresent()) {
 			categoryNo = pathNo1.get();
 		}
+		List<CategoryVo> categorylist = categoryService.findAll(id);
+		model.addAttribute("categorylist", categorylist);
+		
+		List<PostVo> postlist = postService.findAll(id, categoryNo);
+		model.addAttribute("postlist", postlist);
+		
+		if(categoryNo == 0L)
+			categoryNo = categoryService.getCategory(id).getNo();
+		PostVo postvo = postService.findByNo(categoryNo, postNo);
+		model.addAttribute("postvo", postvo);
+		
+		BlogVo blogvo = blogService.getBlog(id);
+		servletContext.setAttribute("blogvo", blogvo);
+		
+		
+		model.addAttribute("id", id);
+		
 		return "blog/main";
-		//return "BlogController.index(" + id + ", " + categoryNo + ", " + postNo + ")";
 	}
 	
 	@Auth
-	@RequestMapping("/admin/basic")
-	public String adminBasic(@PathVariable("id") String id, @AuthUser UserVo authUser) {
+	@RequestMapping(value = "/admin/basic", method = RequestMethod.GET)
+	public String adminBasic(@PathVariable("id") String id, 
+							 @AuthUser UserVo authUser,
+							 Model model) {
 		if(!authUser.getId().equals(id)) {
 			return "redirect:/";
 		}
 		
-		return "blog/admin/basic";
+		BlogVo blogvo = blogService.getBlog(id);
+		
+		model.addAttribute("blogvo", blogvo);
+		model.addAttribute("blog", blogService.getBlog(id));
+		
+		return "/blog/admin/basic";
+	}
+	
+	
+	@Auth
+	@RequestMapping(value = "/admin/basic", method = RequestMethod.POST)
+	public String update(
+				@ModelAttribute BlogVo blogvo, 
+				@RequestParam(value = "file")MultipartFile multipartFile,
+				Model model) {
+		
+		String url = fileUploadService.restore(multipartFile);
+		blogvo.setLogo(url);
+		
+		blogService.updateBlog(blogvo);
+		model.addAttribute("blogvo", blogvo);
+		return "redirect:/" + blogvo.getId();
 	}
 	
 	@Auth
-	@RequestMapping(value="/admin/write", method=RequestMethod.GET)
-	public String write(@ModelAttribute UserVo userVo) {
-		return "blog/admin/write";
+	@RequestMapping(value = "/admin/category", method = RequestMethod.GET)
+	public String category(
+			@PathVariable("id") String id, Model model) {
+		List<CategoryVo> categorylist = categoryService.findAll(id);
+		model.addAttribute("categorylist", categorylist);
+		return "blog/admin/category";
 	}
 	
-//	@Auth
-//	@RequestMapping(value="/admin/write", method=RequestMethod.GET)
-//	public String getCategory() {
-//		return "blog/admin/write";
+	@Auth
+	@RequestMapping(value = "/admin/category", method = RequestMethod.POST)
+	public String category(
+			@PathVariable("id") String id, 
+			@ModelAttribute CategoryVo categoryVo) {
+		categoryVo.setBlogId(id);
+		categoryService.insert(categoryVo);
+		return "redirect:/" + id + "/admin/category";
+	}
+	
+	@Auth
+	@RequestMapping(value = "/admin/category/delete/{no}", method = RequestMethod.GET)
+	public String delete(
+			@PathVariable("id") String id, 
+			@PathVariable("no") Long no) {
+		categoryService.delete(no);
+		return "redirect:/" + id + "/admin/category";
+	}
+	
+	@Auth
+	@RequestMapping(value = "/admin/write", method = RequestMethod.GET)
+	public String write(
+			@PathVariable("id") String id, Model model) {
+		List<CategoryVo> categorylist = categoryService.findAll(id);
+		model.addAttribute("categorylist", categorylist);
+			return "blog/admin/write";
+		}
 	
 	@Auth
 	@RequestMapping(value = "/admin/write", method = RequestMethod.POST)
-	public String Write(@AuthUser UserVo authUser, PostVo postVo, CategoryVo categoryVo) {
-		postVo.setCategoryNo(categoryVo.getNo());
-		postService.write(postVo);
-		return "redirect:/" + authUser.getId() + "/admin/write";
+	public String write(
+			@PathVariable("id") String id, 
+			@RequestParam("category") String category,
+			@ModelAttribute PostVo postvo) {
+		postService.write(id, category, postvo);
+		return "redirect:/" + id;
 	}
 	
 }

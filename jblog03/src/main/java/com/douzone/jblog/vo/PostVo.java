@@ -1,14 +1,15 @@
 package com.douzone.jblog.vo;
 
 public class PostVo {
-	private int no;
+	private Long no;
 	private String title;
 	private String contents;
-	private int categoryNo;
-	public int getNo() {
+	private Long categoryNo;
+	
+	public Long getNo() {
 		return no;
 	}
-	public void setNo(int no) {
+	public void setNo(Long no) {
 		this.no = no;
 	}
 	public String getTitle() {
@@ -23,13 +24,12 @@ public class PostVo {
 	public void setContents(String contents) {
 		this.contents = contents;
 	}
-	public int getCategoryNo() {
+	public Long getCategoryNo() {
 		return categoryNo;
 	}
-	public void setCategoryNo(int categoryNo) {
+	public void setCategoryNo(Long categoryNo) {
 		this.categoryNo = categoryNo;
 	}
-	
 	@Override
 	public String toString() {
 		return "PostVo [no=" + no + ", title=" + title + ", contents=" + contents + ", categoryNo=" + categoryNo + "]";

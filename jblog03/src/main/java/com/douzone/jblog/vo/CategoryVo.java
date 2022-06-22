@@ -1,15 +1,16 @@
 package com.douzone.jblog.vo;
 
 public class CategoryVo {
-	private int no;
+	private Long no;
 	private String name;
 	private String description;
 	private String blogId;
+	private Long count;
 	
-	public int getNo() {
+	public Long getNo() {
 		return no;
 	}
-	public void setNo(int no) {
+	public void setNo(Long no) {
 		this.no = no;
 	}
 	public String getName() {
@@ -29,6 +30,14 @@ public class CategoryVo {
 	}
 	public void setBlogId(String blogId) {
 		this.blogId = blogId;
+	}
+	
+	public Long getCount() {
+		return count;
+	}
+
+	public void setCount(Long count) {
+		this.count = count;
 	}
 	
 	@Override

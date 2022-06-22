@@ -5,8 +5,6 @@ import org.springframework.stereotype.Service;
 
 import com.douzone.jblog.repository.BlogRepository;
 import com.douzone.jblog.vo.BlogVo;
-import com.douzone.jblog.vo.PostVo;
-import com.douzone.jblog.vo.UserVo;
 
 @Service
 public class BlogService {
@@ -14,14 +12,13 @@ public class BlogService {
 	@Autowired
 	private BlogRepository blogRepository;
 
-	public BlogVo getBlog() {
-		return blogRepository.find();
-	}
-	
-	public UserVo getBlog(String id) {
+	public BlogVo getBlog(String id) {
 		return blogRepository.findById(id);
 	}
 
+	public void updateBlog(BlogVo vo) {
+		blogRepository.update(vo);
+	}
 
 	
 }

@@ -20,7 +20,7 @@ public class UserService {
 	public void join(UserVo vo) {
 		userRepository.insert(vo);
 		blogRepository.insert(vo);
-		categoryRepository.insert(vo);
+		categoryRepository.insertJoin(vo);
 		
 	}
 
@@ -28,12 +28,12 @@ public class UserService {
 		UserVo vo = new UserVo();
 		vo.setId(id);
 		vo.setPassword(password);
-
-		return userRepository.findByIdAndPassword(id, password);
+		return getUser(vo);
+		
 	}
 	
 	public UserVo getUser(UserVo vo) {
-		return getUser(vo);
+		return userRepository.findByIdAndPassword(vo);
 	}
 	
 	public UserVo getUser(String id) {

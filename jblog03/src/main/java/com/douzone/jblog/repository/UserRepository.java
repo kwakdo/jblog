@@ -16,13 +16,9 @@ public class UserRepository {
 		 sqlSession.insert("user.insert", vo);
 	}
 
-	public UserVo findByIdAndPassword(String id, String password) {
-//		Map<String, String> map = new HashMap<String, String>();
-//		map.put("id", id);
-//		map.put("passowd", password);
-//		return sqlSession.selectOne("user.findByIdAndPassword", map);
-		return sqlSession.selectOne("user.findByIdAndPassword", id);
-	}	
+	public UserVo findByIdAndPassword(UserVo vo) {
+		return sqlSession.selectOne("user.finByIdAndPassword", vo);
+	}
 
 	public UserVo findById(String id) {
 		return sqlSession.selectOne("user.findById", id);
@@ -31,4 +27,6 @@ public class UserRepository {
 	public boolean update(UserVo vo) {
 		return sqlSession.update("user.update", vo) == 1;
 	}
+
+
 }
