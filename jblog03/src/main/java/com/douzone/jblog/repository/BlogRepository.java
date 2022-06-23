@@ -20,10 +20,6 @@ public class BlogRepository {
 	public BlogVo findById(String id) {
 		return sqlSession.selectOne("blog.findById", id);
 	}
-
-	public BlogVo find() {
-		return sqlSession.selectOne("blog.find");
-	}
 		
 	public void update(BlogVo vo) {
 		sqlSession.update("blog.update", vo);

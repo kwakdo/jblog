@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.douzone.jblog.security.Auth;
-import com.douzone.jblog.security.AuthUser;
 import com.douzone.jblog.service.BlogService;
 import com.douzone.jblog.service.CategoryService;
 import com.douzone.jblog.service.FileUploadService;
@@ -24,7 +23,6 @@ import com.douzone.jblog.service.PostService;
 import com.douzone.jblog.vo.BlogVo;
 import com.douzone.jblog.vo.CategoryVo;
 import com.douzone.jblog.vo.PostVo;
-import com.douzone.jblog.vo.UserVo;
  
 @Controller
 @RequestMapping("/{id:(?!assets).*}")
@@ -64,15 +62,15 @@ public class BlogController {
 		}
 		List<CategoryVo> categorylist = categoryService.findAll(id);
 		model.addAttribute("categorylist", categorylist);
-		
+		System.out.println("categoryList: " + categorylist);
 		List<PostVo> postlist = postService.findAll(id, categoryNo);
 		model.addAttribute("postlist", postlist);
-		
+		System.out.println("postlist: " + postlist);
 		if(categoryNo == 0L)
 			categoryNo = categoryService.getCategory(id).getNo();
 		PostVo postvo = postService.findByNo(categoryNo, postNo);
 		model.addAttribute("postvo", postvo);
-		
+		System.out.println("postvo: " + postvo);
 		BlogVo blogvo = blogService.getBlog(id);
 		servletContext.setAttribute("blogvo", blogvo);
 		
@@ -84,18 +82,7 @@ public class BlogController {
 	
 	@Auth
 	@RequestMapping(value = "/admin/basic", method = RequestMethod.GET)
-	public String adminBasic(@PathVariable("id") String id, 
-							 @AuthUser UserVo authUser,
-							 Model model) {
-		if(!authUser.getId().equals(id)) {
-			return "redirect:/";
-		}
-		
-		BlogVo blogvo = blogService.getBlog(id);
-		
-		model.addAttribute("blogvo", blogvo);
-		model.addAttribute("blog", blogService.getBlog(id));
-		
+	public String adminBasic(@PathVariable("id") String id) {
 		return "/blog/admin/basic";
 	}
 	

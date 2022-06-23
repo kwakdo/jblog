@@ -12,16 +12,16 @@
 		<choose>
 			<when test="category_no != 0">
 				<![CDATA[
-					select * from post where category_no = #{categoryNo};
+					select no, title, contents, category_no as categoryNo from post where category_no = #{category_no };
 					]]>
 			</when>
 			<otherwise>
 				<![CDATA[
-				select * 
+				select a.no, title, contents, category_no as categoryNo 
 				 from post a, 
 				 (select no from user a, category b 
 				 where a.id = b.blog_id 
-				 and a.id = #{id} 
+				 and a.id = #{id } 
 				 order by no desc)as b 
 				 where category_no = b.no order by a.no desc
 				]]>
@@ -33,12 +33,12 @@
 		<choose>
 			<when test='no == 0'>
 			<![CDATA[
-			select * from post where category_no=#{categoryNo } order by no desc limit 0, 1
+			select no, title, contents, category_no as categoryNo from post where category_no=#{categoryNo } order by no desc limit 0, 1
 			]]>
 			</when>
 			<otherwise>
 			<![CDATA[
-			select * from post where category_no=#{categoryNo } and no=#{no } limit 0, 1
+			select no, title, contents, category_no as categoryNo from post where category_no=#{categoryNo } and no=#{no } limit 0, 1
 			]]>
 			</otherwise>
 		</choose>

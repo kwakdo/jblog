@@ -20,7 +20,7 @@
 		<![CDATA[
 		select id, title, logo
 		  from blog
-		 where id=#{id }
+		 where id = #{id }
 		]]>
 	</select>
 	
